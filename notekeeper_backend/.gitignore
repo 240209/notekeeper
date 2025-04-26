@@ -1,0 +1,48 @@
+# ---> Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.DS_Store
+*.env
+.env
+.venv/
+venv/
+env/
+
+# Django stuff:
+*.migrations/
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# VS Code settings
+.vscode/
+
+# ---> Android
+*.iml
+.gradle/
+.idea/
+local.properties
+*.hprof
+captures/
+.externalNativeBuild/
+.cxx/
+build/
+*.apk
+*.ap_
+output.json
+
+# Kotlin specific
+*.kotlin_module
+
+# Ignore generated signed APKs
+app/release/
+app/debug/
+*.keystore

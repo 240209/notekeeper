@@ -1,0 +1,73 @@
+
+### Register a new user
+POST http://localhost:8000/api/auth/register/
+Content-Type: application/json
+
+{
+    "username": "testuserforpasswordreseta",
+    "email": "vojtechtlamka@gmail.com",
+    "password": "testpassword123"
+}
+
+### Login and obtain a token
+POST http://localhost:8000/api/auth/login/
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "testpassword123"
+}
+
+### Request password reset
+POST http://localhost:8000/api/auth/password-reset/
+Content-Type: application/json
+
+{
+    "email": "vojtechtlamka@gmail.com"
+}
+
+### Confirm password reset (replace <uid> and <token> with actual values from email)
+POST http://localhost:8000/api/auth/password-reset-confirm/1/some-token/
+Content-Type: application/json
+
+{
+    "password": "newtestpassword123"
+}
+
+### Create a new note (replace <your_token> with your auth token)
+POST http://localhost:8000/api/notes/
+Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+Content-Type: application/json
+
+{
+    "title": "Sample Note2",
+    "body": "This is a sample note2.",
+    "due_date": "2025-05-01T12:00:00Z",
+    "priority": "Low",
+    "category": "Personal"
+}
+
+### List all notes
+GET http://localhost:8000/api/notes/
+Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+
+### Retrieve a single note (replace <note_id> with the actual note ID)
+GET http://localhost:8000/api/notes/1/
+Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+
+### Update a note (replace <note_id> with the actual note ID)
+PUT http://localhost:8000/api/notes/1/
+Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+Content-Type: application/json
+
+{
+    "title": "Updated Note",
+    "body": "Updated note body.",
+    "due_date": "2025-06-01T12:00:00Z",
+    "priority": "Medium",
+    "category": "Personal"
+}
+
+### Delete a note (replace <note_id> with the actual note ID)
+DELETE http://localhost:8000/api/notes/2/
+Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
