@@ -18,8 +18,8 @@ class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     body = models.TextField()
-    due_date = models.DateTimeField()
-    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
+    due_date = models.DateTimeField(default="2000-01-01 00:00", blank=True)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='Low')
     category= models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
@@ -29,7 +29,7 @@ class Note(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-priority', '-modified_at', 'category']
+        ordering = ['priority', '-modified_at', 'category']
 
     def __str__(self):
         return self.title

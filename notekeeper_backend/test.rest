@@ -14,8 +14,8 @@ POST http://localhost:8000/api/auth/login/
 Content-Type: application/json
 
 {
-    "username": "testuser",
-    "password": "testpassword123"
+    "username": "admin",
+    "password": "admin"
 }
 
 ### Request password reset
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 ### Create a new note (replace <your_token> with your auth token)
 POST http://localhost:8000/api/notes/
-Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+Authorization: Token fa3c667c733f14eb1451a15bf1679a506532e37f
 Content-Type: application/json
 
 {
@@ -49,7 +49,7 @@ Content-Type: application/json
 
 ### List all notes
 GET http://localhost:8000/api/notes/
-Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+Authorization: Token 6395b39c83b129aed822654d07e95174249a1d1f
 
 ### Retrieve a single note (replace <note_id> with the actual note ID)
 GET http://localhost:8000/api/notes/1/

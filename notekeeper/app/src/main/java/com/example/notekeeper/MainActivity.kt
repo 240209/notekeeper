@@ -1,47 +1,43 @@
 package com.example.notekeeper
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.notekeeper.ui.theme.NoteKeeperTheme
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.example.notekeeper.api.ApiClient
+import com.example.notekeeper.utils.TokenManager
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        ApiClient.init(this)
+
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            NoteKeeperTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        redirect()
+    }
+
+    private fun checkUserLoggedIn(): Boolean {
+        // Check if the user token exists in SharedPreferences (or any other method)
+        return TokenManager.getToken(this)?.isNotEmpty() ?: false
+    }
+
+    private fun redirect() {
+        // Check if user is logged in (this can be improved with shared preferences or token storage)
+        val isLoggedIn = checkUserLoggedIn()
+
+        if (isLoggedIn) {
+            // Proceed to Notes Activity
+            startActivity(Intent(this, NotesActivity::class.java))
+        } else {
+            // Redirect to login
+            startActivity(Intent(this, LoginActivity::class.java))
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NoteKeeperTheme {
-        Greeting("Android")
+    override fun onResume() {
+        super.onResume()
+        redirect()
     }
 }

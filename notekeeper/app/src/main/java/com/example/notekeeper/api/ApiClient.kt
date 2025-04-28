@@ -1,0 +1,34 @@
+package com.example.notekeeper.api
+
+import android.content.Context
+import com.example.notekeeper.utils.TokenManager
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+object ApiClient {
+    private const val BASE_URL = "http://10.0.1.51:8000/" // <- your Django server IP
+
+    private lateinit var retrofit: Retrofit
+
+
+    fun init(context: Context) {
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val token = TokenManager.getToken(context)
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
+        retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val apiService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+}

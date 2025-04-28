@@ -1,10 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Primary colors -->
+    <color name="colorPrimary">#6200EE</color> <!-- Purple -->
+    <color name="colorPrimaryDark">#3700B3</color> <!-- Dark Purple -->
+    <color name="colorAccent">#03DAC5</color> <!-- Teal -->
+
+    <!-- Text colors -->
+    <color name="colorTextPrimary">#000000</color> <!-- Black -->
+    <color name="colorTextSecondary">#757575</color> <!-- Dark Gray -->
+
+    <!-- Background colors -->
+    <color name="colorBackground">#FFFFFF</color> <!-- White -->
+    <color name="colorBackgroundSecondary">#F1F1F1</color> <!-- Light Gray -->
+
+    <!-- Button colors -->
+    <color name="colorButton">#6200EE</color> <!-- Purple Button -->
+    <color name="colorButtonText">#FFFFFF</color> <!-- White Button Text -->
+
+    <!-- Status Bar -->
+    <color name="statusBarColor">#3700B3</color> <!-- Dark Purple for status bar -->
+
+    <!-- Error colors -->
+    <color name="colorError">#B00020</color> <!-- Red for error messages -->
+
+    <!-- Divider color -->
+    <color name="colorDivider">#E0E0E0</color> <!-- Light Gray Divider -->
+
 </resources>
