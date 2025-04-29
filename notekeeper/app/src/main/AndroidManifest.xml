@@ -4,9 +4,8 @@
     package="com.example.notekeeper">
 
     <!-- Required Permissions -->
-    <!-- Uncomment if your app needs internet or network access -->
-     <uses-permission android:name="android.permission.INTERNET"/>
-     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <!-- Application Configuration -->
     <application
@@ -28,15 +27,13 @@
             </intent-filter>
         </activity>
 
-        <!-- Add other activities for your app -->
+        <!-- Other Activities -->
         <activity android:name=".LoginActivity" />
         <activity android:name=".NotesActivity" />
         <activity android:name=".CreateNoteActivity" />
+        <activity android:name=".EditNoteActivity" />
         <activity android:name=".RegisterActivity" />
 
-        <!-- Define other app components (Services, BroadcastReceivers, etc.) if needed -->
-        <!-- <service android:name=".MyService"/> -->
-        <!-- <receiver android:name=".MyReceiver"/> -->
     </application>
 
 </manifest>

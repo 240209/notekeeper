@@ -14,8 +14,8 @@ POST http://localhost:8000/api/auth/login/
 Content-Type: application/json
 
 {
-    "username": "admin",
-    "password": "admin"
+    "username": "Nikca",
+    "password": "ahoj"
 }
 
 ### Request password reset
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 ### Create a new note (replace <your_token> with your auth token)
 POST http://localhost:8000/api/notes/
-Authorization: Token fa3c667c733f14eb1451a15bf1679a506532e37f
+Authorization: Token 5e7497d176ddd0897168c4c7aea519d4f909ac0e
 Content-Type: application/json
 
 {
@@ -49,25 +49,36 @@ Content-Type: application/json
 
 ### List all notes
 GET http://localhost:8000/api/notes/
-Authorization: Token 6395b39c83b129aed822654d07e95174249a1d1f
+Authorization: Token 5e7497d176ddd0897168c4c7aea519d4f909ac0e
 
 ### Retrieve a single note (replace <note_id> with the actual note ID)
 GET http://localhost:8000/api/notes/1/
 Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
 
 ### Update a note (replace <note_id> with the actual note ID)
-PUT http://localhost:8000/api/notes/1/
-Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+PUT http://localhost:8000/api/notes/12/
+Authorization: Token 5e7497d176ddd0897168c4c7aea519d4f909ac0e
 Content-Type: application/json
 
 {
-    "title": "Updated Note",
-    "body": "Updated note body.",
-    "due_date": "2025-06-01T12:00:00Z",
-    "priority": "Medium",
-    "category": "Personal"
+    "id": 12,
+    "title": "Hey",
+    "body": "hey",
+    "due_date": "2025-04-30T15:47:00Z",
+    "priority": 1,
+    "category": "Other"
 }
 
 ### Delete a note (replace <note_id> with the actual note ID)
 DELETE http://localhost:8000/api/notes/2/
 Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
+
+###
+
+PATCH http://localhost:8000/api/notes/8/ HTTP/1.1
+Authorization: Token dda4fce18dd2dd206077362a5cfbbfa955993c0c
+Content-Type: application/json
+
+{
+  "priority": 1
+}

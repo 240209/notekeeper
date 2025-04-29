@@ -20,64 +20,65 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)  // Show the back arrow
-            setDisplayShowHomeEnabled(true)  // Show the icon on the left
-            title = "NoteKeeper: Register"  // Optional: Change the title of the action bar
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = "NoteKeeper: Register"
         }
 
         binding.registerButton.setOnClickListener {
-            val username = binding.usernameEditText.text.toString()
-            val email = binding.emailEditText.text.toString()
+            val username = binding.usernameEditText.text.toString().trim()
+            val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString()
             val passwordCheck = binding.passwordCheckEditText.text.toString()
 
-            if (password != passwordCheck)
-                Toast.makeText(this@RegisterActivity, "Passwords do not match.", Toast.LENGTH_SHORT).show()
-            else {
-                lifecycleScope.launch {
-                    try {
-                        val response = ApiClient.apiService.registerUser(
-                            RegisterRequest(
-                                username,
-                                email,
-                                password
-                            )
-                        )
-                        if (response.isSuccessful) {
-                            val registeredUsername = response.body()?.username
-                            Toast.makeText(
-                                this@RegisterActivity,
-                                "User $registeredUsername created successfully!",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this@RegisterActivity,
-                                "Error: ${response.message()}",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                    } catch (e: Exception) {
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password != passwordCheck) {
+                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            binding.registerButton.isEnabled = false
+
+            lifecycleScope.launch {
+                try {
+                    val response = ApiClient.apiService.registerUser(
+                        RegisterRequest(username, email, password)
+                    )
+                    if (response.isSuccessful) {
+                        val registeredUsername = response.body()?.username ?: username
                         Toast.makeText(
                             this@RegisterActivity,
-                            "Error: ${e.message}",
+                            "User $registeredUsername created successfully!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Registration failed: ${response.message()}",
                             Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
                     }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Error: ${e.localizedMessage}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } finally {
+                    binding.registerButton.isEnabled = true
                 }
             }
         }
-
     }
 
-    // Handle the back button press (when the up button in the action bar is pressed)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
-            // When the back arrow is pressed, go back to the previous activity
             onBackPressedDispatcher.onBackPressed()
             true
         } else {

@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 class Note(models.Model):
     PRIORITY_CHOICES = (
-        ('High', 'High'),
-        ('Medium', 'Medium'),
-        ('Low', 'Low'),
+        (1, 'High'),
+        (2, 'Medium'),
+        (3, 'Low'),
     )
     CATEGORY_CHOICES = [
         ('Personal', 'Personal'),
@@ -18,8 +20,11 @@ class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     body = models.TextField()
-    due_date = models.DateTimeField(default="2000-01-01 00:00", blank=True)
-    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='Low')
+    due_date = models.DateTimeField(
+        default=make_aware(datetime(2000, 1, 1, 0, 0)),
+        blank=True
+    )
+    priority = models.IntegerField(choices=PRIORITY_CHOICES, default=3)
     category= models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,

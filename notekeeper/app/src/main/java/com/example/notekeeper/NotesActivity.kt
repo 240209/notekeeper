@@ -1,5 +1,6 @@
 package com.example.notekeeper
 
+import androidx.appcompat.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -36,6 +37,13 @@ class NotesActivity : AppCompatActivity() {
         val token = TokenManager.getToken(this)
         lifecycleScope.launch {
             try {
+                if (token.isNullOrEmpty()) {
+                    Toast.makeText(this@NotesActivity, "Session expired, please log in again.", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@NotesActivity, LoginActivity::class.java))
+                    finish()
+                    return@launch
+                }
+
                 val response = ApiClient.apiService.getNotes("Token $token")
                 if (response.isSuccessful) {
                     val notes = response.body() ?: emptyList()
@@ -48,6 +56,7 @@ class NotesActivity : AppCompatActivity() {
             }
         }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -65,11 +74,25 @@ class NotesActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.logout_button -> {
                 // Handle the logout logic here
-                logoutUser()
+                showLogoutConfirmationDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    // Show the logout confirmation dialog
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirm Logout")
+        builder.setMessage("Are you sure you want to logout?")
+        builder.setPositiveButton("Yes") { _, _ ->
+            logoutUser() // If user confirms, logout
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss() // If user cancels, dismiss the dialog
+        }
+        builder.create().show()
     }
 
     // Logout logic to handle user logout
@@ -90,7 +113,5 @@ class NotesActivity : AppCompatActivity() {
                 Toast.makeText(this@NotesActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edit_note_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            android:maxLength="255"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/edit_note_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Body"
+            android:layout_marginTop="8dp"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:scrollbars="vertical"
+            android:gravity="top|start" />
+
+        <!-- Category field with dropdown for predefined categories -->
+        <Spinner
+            android:id="@+id/edit_note_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Priority field with dropdown for predefined priority choices -->
+        <Spinner
+            android:id="@+id/edit_note_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Due Date field -->
+        <Button
+            android:id="@+id/edit_note_due_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Due Date"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/editNoteCreatedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created: "
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/editNoteModifiedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modified: "
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <!-- Create Note button -->
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Note"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Delete Note button -->
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Note"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

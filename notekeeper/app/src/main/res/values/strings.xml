@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">NoteKeeper</string>
 
-    <string-array name="categories_array">
+    <string-array name="categories">
         <item>Personal</item>
         <item>Work</item>
         <item>School</item>
         <item>Travel</item>
         <item>Other</item>
     </string-array>
-    <string-array name="priority_array">
-        <item>Low</item>
-        <item>Medium</item>
-        <item>High</item>
+    <string-array name="priorities">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 </resources>

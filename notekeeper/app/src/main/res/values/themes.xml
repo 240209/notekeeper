@@ -2,4 +2,5 @@
 <resources>
 
     <style name="Theme.NoteKeeper" parent="android:Theme.Material.Light.NoActionBar" />
+
 </resources>

@@ -44,13 +44,17 @@ interface ApiService {
         @Body noteRequest: NoteRequest
     ): Response<NoteResponse>
 
-    // @GET("api/notes/{id}/")
+    @GET("api/notes/{id}/")
+    suspend fun getNoteById(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<NoteResponse>
 
     @PUT("api/notes/{id}/")
     suspend fun updateNote(
         @Header("Authorization") token: String,
         @Path("id") id: Int,
-        @Body noteRequest: NoteRequest
+        @Body noteRequest: NoteResponse
     ): Response<NoteResponse>
 
     @DELETE("api/notes/{id}/")

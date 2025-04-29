@@ -19,13 +19,18 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.loginButton.setOnClickListener {
-            val username = binding.usernameEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
+        supportActionBar?.title = "NoteKeeper: Login"
 
-            supportActionBar?.apply {
-                title = "NoteKeeper: Login"  // Optional: Change the title of the action bar
+        binding.loginButton.setOnClickListener {
+            val username = binding.usernameEditText.text.toString().trim()
+            val password = binding.passwordEditText.text.toString().trim()
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            binding.loginButton.isEnabled = false // optional UX improvement
 
             lifecycleScope.launch {
                 try {
@@ -36,14 +41,16 @@ class LoginActivity : AppCompatActivity() {
                             TokenManager.saveToken(this@LoginActivity, token)
                             startActivity(Intent(this@LoginActivity, NotesActivity::class.java))
                             finish()
+                        } ?: run {
+                            Toast.makeText(this@LoginActivity, "Unexpected error: Empty token", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this@LoginActivity, "Login failed", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this@LoginActivity, "Login failed: Invalid credentials", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this@LoginActivity, "Error: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                } finally {
+                    binding.loginButton.isEnabled = true
                 }
             }
         }
@@ -52,8 +59,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
             } catch (e: Exception) {
-                Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this@LoginActivity, "Error: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
         }
     }
