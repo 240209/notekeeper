@@ -3,16 +3,17 @@ package com.example.notekeeper
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.notekeeper.api.ApiClient
 import com.example.notekeeper.databinding.ActivityEditNoteBinding
-import com.example.notekeeper.models.NoteRequest
 import com.example.notekeeper.models.NoteResponse
 import com.example.notekeeper.utils.TokenManager
 import kotlinx.coroutines.launch
@@ -23,8 +24,7 @@ class EditNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditNoteBinding
     private var noteId: Int = -1
     private val calendar = Calendar.getInstance()
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-    private var dueDate: String = "2000-01-01 00:00"
+    private var dueDate: Date = Date(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,6 @@ class EditNoteActivity : AppCompatActivity() {
 
         loadNoteDetails(noteId)
 
-        // Category spinner
         val categoryAdapter = ArrayAdapter.createFromResource(
             this,
             R.array.categories,
@@ -55,7 +54,6 @@ class EditNoteActivity : AppCompatActivity() {
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.editNoteCategory.adapter = categoryAdapter
 
-        // Priority spinner
         val priorityAdapter = ArrayAdapter.createFromResource(
             this,
             R.array.priorities,
@@ -87,8 +85,11 @@ class EditNoteActivity : AppCompatActivity() {
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
 
-                dueDate = dateFormat.format(calendar.time) // Save formatted date
-                binding.editNoteDueDate.setText("Due: $dueDate") // Update UI
+                dueDate = calendar.time // Keep as-is (local time for now)
+                val displayDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).apply {
+                    timeZone = TimeZone.getDefault()
+                }.format(dueDate)
+                binding.editNoteDueDate.setText("Due: $displayDate")
             }
 
             TimePickerDialog(
@@ -109,19 +110,7 @@ class EditNoteActivity : AppCompatActivity() {
         ).show()
     }
 
-
-    fun formatIsoDate(isoDateString: String): String {
-        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-        isoFormat.timeZone = TimeZone.getTimeZone("UTC") // The input is in UTC
-
-        val date = isoFormat.parse("${isoDateString.substring(0, 18)}Z")
-
-        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-        outputFormat.timeZone = TimeZone.getTimeZone("UTC") // Convert to local time zone if needed
-
-        return outputFormat.format(date!!)
-    }
-
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun loadNoteDetails(noteId: Int) {
         val token = TokenManager.getToken(this)
         if (token.isNullOrEmpty()) {
@@ -143,21 +132,23 @@ class EditNoteActivity : AppCompatActivity() {
                         binding.editNoteCategory.setSelection(
                             resources.getStringArray(R.array.categories).indexOf(note.category)
                         )
-                        val formattedDate = formatIsoDate(note.due_date)
-                        dueDate = formattedDate
-                        binding.editNoteDueDate.setText("Due: $formattedDate")
 
                         note.due_date?.let {
-                            try {
-                                calendar.time = dateFormat.parse(formattedDate) ?: calendar.time
-                            } catch (_: Exception) { }
+                            dueDate = UtcStringToUtcDate(it)
+
+                            val formattedDate = UtcDateToLocalString(dueDate)
+                            binding.editNoteDueDate.setText("Due: $formattedDate")
+
+                            calendar.time = dueDate
                         }
 
                         note.created_at?.let {
-                            binding.editNoteCreatedAt.text = "Note created at: ${formatIsoDate(it)}"
+                            var createdAtString = UtcDateToLocalString(UtcStringToUtcDate(note.created_at))
+                            binding.editNoteCreatedAt.text = "Note created at: ${createdAtString}"
                         }
                         note.modified_at?.let {
-                            binding.editNoteModifiedAt.text = "Last edit at: ${formatIsoDate(it)}"
+                            var modifiedAtString = UtcDateToLocalString(UtcStringToUtcDate(note.modified_at))
+                            binding.editNoteModifiedAt.text = "Last edit at: ${modifiedAtString}"
                         }
                     } else {
                         Toast.makeText(this@EditNoteActivity, "Note not found", Toast.LENGTH_SHORT).show()
@@ -172,16 +163,15 @@ class EditNoteActivity : AppCompatActivity() {
         }
     }
 
-    // Show the delete confirmation dialog
     private fun showDeleteConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Confirm Deletion")
         builder.setMessage("Are you sure you want to delete the note?")
         builder.setPositiveButton("Yes") { _, _ ->
-            deleteNote() // If user confirms, logout
+            deleteNote()
         }
         builder.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss() // If user cancels, dismiss the dialog
+            dialog.dismiss()
         }
         builder.create().show()
     }
@@ -215,7 +205,9 @@ class EditNoteActivity : AppCompatActivity() {
         val body = binding.editNoteBody.text.toString().trim()
         val category = binding.editNoteCategory.selectedItem.toString()
         val priority = binding.editNotePriority.selectedItem.toString().toIntOrNull() ?: 0
-        val dueDate = this.dueDate // Use the stored string directly
+
+
+        val dueDateString = UtcDateToUtcString(dueDate)
 
         if (title.isEmpty() || body.isEmpty()) {
             Toast.makeText(this, "Title and body are required", Toast.LENGTH_SHORT).show()
@@ -228,7 +220,7 @@ class EditNoteActivity : AppCompatActivity() {
             body = body,
             category = category,
             priority = priority,
-            due_date = dueDate,
+            due_date = dueDateString,
             created_at = null,
             modified_at = null
         )
@@ -255,6 +247,42 @@ class EditNoteActivity : AppCompatActivity() {
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun UtcStringToUtcDate(UtcString: String?): Date {
+        if (UtcString.isNullOrEmpty()) return Date(0)
+
+        // Use Instant for proper ISO 8601 parsing if available (API 26+)
+        return try {
+            val instant = java.time.Instant.parse(UtcString)
+            Date.from(instant)
+        } catch (e: Exception) {
+            // Fallback for legacy (incomplete ISO parser)
+            val correctedUtcString = UtcString.split('.')[0]
+            val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            isoFormat.timeZone = TimeZone.getTimeZone("UTC")
+            isoFormat.parse(correctedUtcString) ?: Date(0)
+        }
+    }
+
+
+    fun UtcDateToLocalString(UtcDate: Date?): String {
+        if (UtcDate == null) return ""
+
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        format.timeZone = TimeZone.getDefault()
+        return format.format(UtcDate)
+    }
+
+
+    fun UtcDateToUtcString(UtcDate: Date?): String {
+        if (UtcDate == null) return ""
+
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        format.timeZone = TimeZone.getTimeZone("UTC")
+        return format.format(UtcDate)
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {

@@ -38,7 +38,11 @@ class NotesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 if (token.isNullOrEmpty()) {
-                    Toast.makeText(this@NotesActivity, "Session expired, please log in again.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@NotesActivity,
+                        "Session expired, please log in again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     startActivity(Intent(this@NotesActivity, LoginActivity::class.java))
                     finish()
                     return@launch
@@ -49,7 +53,8 @@ class NotesActivity : AppCompatActivity() {
                     val notes = response.body() ?: emptyList()
                     binding.notesRecyclerView.adapter = NotesAdapter(notes)
                 } else {
-                    Toast.makeText(this@NotesActivity, "Failed to load notes", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@NotesActivity, "Failed to load notes", Toast.LENGTH_SHORT)
+                        .show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@NotesActivity, "Error loading notes", Toast.LENGTH_SHORT).show()
@@ -77,6 +82,7 @@ class NotesActivity : AppCompatActivity() {
                 showLogoutConfirmationDialog()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -107,7 +113,8 @@ class NotesActivity : AppCompatActivity() {
                     startActivity(Intent(this@NotesActivity, LoginActivity::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this@NotesActivity, "Error logging out.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@NotesActivity, "Error logging out.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@NotesActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
