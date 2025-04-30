@@ -49,8 +49,8 @@ This is a full-stack note-taking application consisting of a **Django REST API**
 
 ## ⏱ Time Estimates & Progress
 
-| Task | Time Estimate | Status |
-|------|---------------|--------|
+| Task | Status |
+|------|--------|
 | Backend API & Auth | ✅ Completed |
 | Android UI & Integration | ✅ Completed |
 | Sorting, Priority, Notifications | ⚠️ Partially Done (backend only) |
