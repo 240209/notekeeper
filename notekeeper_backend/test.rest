@@ -49,7 +49,7 @@ Content-Type: application/json
 
 ### List all notes
 GET http://localhost:8000/api/notes/
-Authorization: Token 5e7497d176ddd0897168c4c7aea519d4f909ac0e
+Authorization: Token 1650bbadeebbb79e9ae07a0498fb7722e6e5831e
 
 ### Retrieve a single note (replace <note_id> with the actual note ID)
 GET http://localhost:8000/api/notes/1/
@@ -57,17 +57,17 @@ Authorization: Token ce96b3be7fe399826494631ea0f029ed5e794e4e
 
 ### Update a note (replace <note_id> with the actual note ID)
 PUT http://localhost:8000/api/notes/12/
-Authorization: Token 5e7497d176ddd0897168c4c7aea519d4f909ac0e
+Authorization: Token 1650bbadeebbb79e9ae07a0498fb7722e6e5831e
 Content-Type: application/json
 
 {
-    "id": 12,
-    "title": "Hey",
-    "body": "hey",
-    "due_date": "2025-04-30T15:47:00Z",
+    "id": 37,
+    "title": "00:00 UPDATED",
+    "body": "jj",
+    "due_date": "2000-01-26T19:10:00Z",
     "priority": 1,
-    "category": "Other"
-}
+    "category": "Personal"
+  }
 
 ### Delete a note (replace <note_id> with the actual note ID)
 DELETE http://localhost:8000/api/notes/2/

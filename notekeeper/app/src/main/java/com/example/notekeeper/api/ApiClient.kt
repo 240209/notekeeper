@@ -1,51 +1,27 @@
 package com.example.notekeeper.api
 
 import android.content.Context
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-/*
+
+// Singleton object that manages the creation and access to the Retrofit API client
 object ApiClient {
-    private const val BASE_URL = "http://10.0.1.51:8000/" // <- your Django server IP
-
-    lateinit var retrofit: Retrofit
-
-
-    fun init(context: Context) {
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-
-        retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    val apiService: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
-    }
-}
-*/
-object ApiClient {
+    // Base URL for the API endpoints
     private const val BASE_URL = "http://10.0.1.51:8000/"
 
+    // Lazy-initialized Retrofit instance configured with base URL and Gson converter
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+            .baseUrl(BASE_URL) // Sets the base URL for network requests
+            .addConverterFactory(GsonConverterFactory.create()) // Adds support for JSON conversion using Gson
+            .build() // Builds the Retrofit instance
     }
 
+    // Lazily creates an implementation of the API interface (ApiService)
     val apiService: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
+        retrofit.create(ApiService::class.java) // Creates an implementation of the defined API endpoints
     }
 
-    fun init(context: Context) {
-        // Make sure Retrofit is properly initialized here if needed
-    }
+    // Optional initialization function (currently unused)
+    fun init(context: Context) {}
 }
